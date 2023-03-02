@@ -62,7 +62,7 @@ function renderizarAlbumes(lista){
                         `<li data-id="${album.id}">
                             <p> ${album.nombre } </p>
                             <img src="${ album.imagen}"  alt="${album.imagen}"> 
-                            <i  id="${album.id}" class="fa fa-heart  ${  album.like  ? 'favorito'  : '' }  "></i>
+                            <i id="${album.id}" class="fa fa-heart  ${  album.like  ? 'favorito'  : '' }  "></i>
                         </li>`;
         
     });
@@ -70,7 +70,7 @@ function renderizarAlbumes(lista){
 }
 
 
-obtenerUsuario();
+//obtenerUsuario();
 renderizarAlbumes(albumesFamosos);
 
 /* ----------------------------- MESA DE TRABAJO ---------------------------- */
