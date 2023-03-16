@@ -13,9 +13,6 @@ const passwordError = document.querySelector('#passwordError');
 const rolError = document.querySelector('#rolError');
 const terminosError = document.querySelector('#terminosError');
 
-console.log(formulario, inputEmail, inputPassword, selectRol, inputTerminos)
-
-
 
 const usuario = {
     email: '',
@@ -54,6 +51,25 @@ function mostrarErrores(){
 formulario.addEventListener('change', function(){
     console.log('Cambio los estados');
     // Actualizo los dato del usuario
+    validarTodosLosCampos();
+
+})
+
+
+formulario.addEventListener('submit', function(e){
+    e.preventDefault();
+    validarTodosLosCampos();
+    if( usuarioEstadosError.email || usuarioEstadosError.password || usuarioEstadosError.rol || usuarioEstadosError.terminos  ){
+        alert('Hay campos incorrectos');
+    } else {
+        console.log('✉');
+        guardarRegistro();
+        location.href = 'usuario.html';
+    }
+})
+
+
+function validarTodosLosCampos(){
     usuario.email = inputEmail.value;
     usuario.password = inputPassword.value;
     usuario.rol = selectRol.value;
@@ -62,22 +78,31 @@ formulario.addEventListener('change', function(){
     // Actualizar los estados de error
     //usuarioEstadosError.email = validarEmail( usuario.email );
 
-
+    usuarioEstadosError.email = validarEmail( usuario.email);
     usuarioEstadosError.terminos = validarTerminos( usuario.terminos );
 
     usuarioEstadosError.password = validarPassword( usuario.password);
     usuarioEstadosError.rol = validarRol( usuario.rol);
     mostrarErrores();
-
-
-})
-
+}
 
 function validarEmail(email){
-
-
-
-
+    
+    let expReg = new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    
+   if(  expReg.test(email) ) {
+        return false;
+   } else {
+        return true;
+   }
+    
+    //            @           &&       . 
+    /* if( email.includes('@') && email.includes('.')){
+        return false;
+        } else {
+            return true;
+        }
+     */
 
 }
 
@@ -107,4 +132,9 @@ function validarTerminos(termino){
     } else {
         return true;
     }
+}
+
+
+function guardarRegistro(){
+    localStorage.setItem('usuario', JSON.stringify( usuario));
 }
