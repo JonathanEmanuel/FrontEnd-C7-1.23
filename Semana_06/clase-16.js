@@ -85,14 +85,29 @@ const btn = document.querySelector('button');
 
 btn.addEventListener('click', function(){
     console.info('Cargando comentarios');
+
+    btn.style.color = 'black';
+    btn.style.textDecoration = 'line-through';
+    btn.setAttribute('disabled', 'disabled');
     // Llamo a una función que me va retornar una Promesa
+
     consultaAsincrona('endpoint')
         .then(  respuesta => {      // Si se cumple la promesa
             console.log(respuesta);
+            renderizarElementos( respuesta );
         })
         .catch(  error => {  // Si no se cumple
             console.log('ocurrio error' , error);
+            alert('Ups tenemos un problema :(');
+            
+        }).finally( ()=> {
+            btn.style.color = 'blue';
+            btn.style.textDecoration = 'none';
+            btn.removeAttribute('disabled');
         })
+
+
+
         otraAccion();
 });
 
@@ -133,6 +148,17 @@ function consultaAsincrona(paramentro){
 //  llegar al mismo resultado utilizando .map()
 // Muchos éxitos!
 
+
 function renderizarElementos(listado){
     // desarrollar la funcion 👇
+    const areaComentarios = document.querySelector('.comentarios');
+
+    areaComentarios.innerHTML = '';
+    listado.forEach(comentario => { 
+        areaComentarios.innerHTML += // html 
+            `<div class="comentario">
+                <h4> ${ comentario.email} </h4>
+                <p> ${comentario.body} </p>
+            </div>`;
+    });
 }
