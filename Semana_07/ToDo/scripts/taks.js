@@ -3,7 +3,7 @@
 
 // 🖍 Si existe un token guardado
 const jwt = JSON.parse( localStorage.getItem('jwt') );
-console.log(jwt);
+//console.log(jwt);
 
 if( ! jwt){ // Si no éxiste el jwt vamos al login
   location.replace('index.html');
@@ -17,8 +17,7 @@ window.addEventListener('load', function () {
   const userName = document.querySelector('.user-info p')
   const formCrearTarea = document.querySelector('.nueva-tarea');
   obtenerNombreUsuario();
-  console.log(userName)
-
+  consultarTareas();
 
   /* -------------------------------------------------------------------------- */
   /*                          FUNCIÓN 1 - Cerrar sesión                         */
@@ -38,7 +37,6 @@ window.addEventListener('load', function () {
   /* -------------------------------------------------------------------------- */
   /*                 FUNCIÓN 2 - Obtener nombre de usuario [GET]                */
   /* -------------------------------------------------------------------------- */
-
   function obtenerNombreUsuario() {
     const endPoint = 'https://todo-api.ctd.academy/v1/users/getMe';
     const config = {
@@ -52,7 +50,7 @@ window.addEventListener('load', function () {
     fetch(endPoint, config)
     .then( resp => resp.json())
     .then( data => {
-      console.log(data);
+      //console.log(data);
 
       const nombre = `${data.firstName} ${data.lastName}`;
       userName.textContent = nombre;
@@ -68,11 +66,22 @@ window.addEventListener('load', function () {
   /* -------------------------------------------------------------------------- */
 
   function consultarTareas() {
+    const endPoint = 'https://todo-api.ctd.academy/v1/tasks';
     
+    const config = {
+        method: 'GET',
+        headers: {
+          authorization: jwt ,
+          'Content-type': 'application/json'
+        }
+    }
+    fetch(endPoint, config)
+    .then( resp => resp.json())
+    .then( data => {
+      console.log(data);
+      renderizarTareas(data);
+    });
     
-
-
-
   };
 
 
@@ -81,23 +90,84 @@ window.addEventListener('load', function () {
   /* -------------------------------------------------------------------------- */
 
   formCrearTarea.addEventListener('submit', function (event) {
+    const inputTarea = document.querySelector('#nuevaTarea');
+    event.preventDefault();
+
+    const endPoint = 'https://todo-api.ctd.academy/v1/tasks';
+    const settings = {
+      description: inputTarea.value,
+      completed: false
+    }
     
-
-
+    const config = {
+        method: 'POST',
+        body: JSON.stringify(settings),
+        headers: {
+          authorization: jwt ,
+          'Content-type': 'application/json'
+        }
+    }
+    fetch(endPoint, config)
+    .then( resp => resp.json())
+    .then( data => {
+      console.log(data);
+      consultarTareas();
+    });
 
 
   });
-
 
   /* -------------------------------------------------------------------------- */
   /*                  FUNCIÓN 5 - Renderizar tareas en pantalla                 */
   /* -------------------------------------------------------------------------- */
   function renderizarTareas(listado) {
+    const seccionTareasPendientes = document.querySelector('.tareas-pendientes');
+    const seccionTareasTerminadas = document.querySelector('.tareas-terminadas');
 
+    seccionTareasPendientes.innerHTML = '';
+    seccionTareasTerminadas.innerHTML = '';
 
+    listado.forEach(tarea => {
+      let fecha = new Date(tarea.createdAt)
 
+      if( !tarea.completed ){
 
+        seccionTareasPendientes.innerHTML += // html
+          `<li class="tarea">
+            <button class="change" id="${tarea.id}"><i class="fa-regular fa-circle"></i></button>
+            <div class="descripcion">
+              <p class="nombre"> ${tarea.description} </p>
+              <p class="timestamp">${fecha.toLocaleDateString()} : ${fecha.toLocaleTimeString()}</p> 
+            </div>
+          </li>`;
+      } else {
+        seccionTareasTerminadas.innerHTML += // html
+          `<li class="tarea">
+            <div class="hecha">
+              <i class="fa-regular fa-circle-check"></i>
+            </div>
+            <div class="descripcion">
+              <p class="nombre"> ${tarea.description} </p>
+              <p class="timestamp">${fecha.toLocaleDateString()} : ${fecha.toLocaleTimeString()}</p> 
+              <div class="cambios-estados">
+                <button class="change incompleta" id="${tarea.id}" ><i class="fa-solid fa-rotate-left"></i></button>
+                <button class="borrar" id="${tarea.id}"><i class="fa-regular fa-trash-can"></i></button>
+              </div>
+            </div>
+          </li>`;
+      }
 
+    });
+
+    // Agrego el eventListner 
+    const btnsChange = document.querySelectorAll('.change');
+    //console.log(btnsChange); //NodeList
+
+    btnsChange.forEach( btn => {
+        btn.addEventListener('click', function(evento){
+          console.log(evento.target);
+        })
+    });
 
 
   };

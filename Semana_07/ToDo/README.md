@@ -28,9 +28,9 @@ https://todo-api.ctd.academy/v1/
 ## Requerimientos funcionales en pantalla de Tareas
 - [x] FUNCIÓN 1: Darle funcionalidad al botón de "Cerrar sesión".
 - [x] FUNCIÓN 2: Crear un función para obtener el nombre de usuario y presentarlo en pantalla.
-- [ ] FUNCIÓN 3: Implementar una función para obtener el listado de tareas.
-- [p] FUNCIÓN 4: Lograr que funcione el botón de crear nueva tarea.
-- [ ] FUNCIÓN 5: Poder renderizar en pantalla las tareas según su estado, dentro del listado que corresponda.
+- [x] FUNCIÓN 3: Implementar una función para obtener el listado de tareas.
+- [E] FUNCIÓN 4: Lograr que funcione el botón de crear nueva tarea.
+- [x] FUNCIÓN 5: Poder renderizar en pantalla las tareas según su estado, dentro del listado que corresponda.
 - [ ] FUNCIÓN 6: Cambiar una tarea pendiente a terminada y viceversa.
 - [ ] FUNCIÓN 7: Eliminar definitivamente una tarea.
 
