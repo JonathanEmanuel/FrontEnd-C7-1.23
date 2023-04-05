@@ -31,7 +31,7 @@ https://todo-api.ctd.academy/v1/
 - [x] FUNCIÓN 3: Implementar una función para obtener el listado de tareas.
 - [E] FUNCIÓN 4: Lograr que funcione el botón de crear nueva tarea.
 - [x] FUNCIÓN 5: Poder renderizar en pantalla las tareas según su estado, dentro del listado que corresponda.
-- [ ] FUNCIÓN 6: Cambiar una tarea pendiente a terminada y viceversa.
+- [x] FUNCIÓN 6: Cambiar una tarea pendiente a terminada y viceversa.
 - [ ] FUNCIÓN 7: Eliminar definitivamente una tarea.
 
 ## Requerimiento no funcional

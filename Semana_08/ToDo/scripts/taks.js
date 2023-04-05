@@ -159,16 +159,8 @@ window.addEventListener('load', function () {
 
     });
 
-    // Agrego el eventListner 
-    const btnsChange = document.querySelectorAll('.change');
-    //console.log(btnsChange); //NodeList
-
-    btnsChange.forEach( btn => {
-        btn.addEventListener('click', function(evento){
-          console.log(evento.target);
-        })
-    });
-
+    botonesCambioEstado();
+    botonBorrarTarea();
 
   };
 
@@ -176,7 +168,52 @@ window.addEventListener('load', function () {
   /*                  FUNCIÓN 6 - Cambiar estado de tarea [PUT]                 */
   /* -------------------------------------------------------------------------- */
   function botonesCambioEstado() {
+        // Agrego el eventListner 
+        const btnsChange = document.querySelectorAll('.change'); //NodeList
+
+
+        btnsChange.forEach( btn => {
     
+            btn.addEventListener('click', function(evento){
+              console.log(evento.target);
+              const id = evento.target.id;
+              const endPoint = 'https://todo-api.ctd.academy/v1/tasks/' +id;
+    
+              // VERIFICO SI TIENE LA CLASE incompleta
+    
+              /*          
+              var estado;
+    
+              if( evento.target.classList.contains('incompleta') ){
+                console.log('incompleta');
+                estado = false;
+              } else {
+                console.log('Completa')
+                estado = true
+              } */
+    
+            
+              const datos = {
+                //completed: estado,
+                completed: !evento.target.classList.contains('incompleta')
+              }
+             
+              const config = {
+                method: 'PUT',
+                headers: {
+                  authorization: jwt ,
+                  'Content-type': 'application/json'
+                },
+                body: JSON.stringify( datos )
+              }
+              fetch(endPoint, config)
+              .then( resp => resp.json())
+              .then( data => {
+                consultarTareas();
+              });
+    
+            })
+        });
     
 
 
