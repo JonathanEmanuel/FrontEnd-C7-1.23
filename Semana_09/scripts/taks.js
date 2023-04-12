@@ -52,8 +52,7 @@ window.addEventListener('load', function () {
   /* -------------------------------------------------------------------------- */
   /*                 FUNCIÓN 2 - Obtener nombre de usuario [GET]                */
   /* -------------------------------------------------------------------------- */
-  function obtenerNombreUsuario() {
-  
+  async function obtenerNombreUsuario() {
     const endpoint = 'https://todo-api.ctd.academy/v1/users/getMe';
     const settings = {
       method: 'GET',
@@ -61,22 +60,22 @@ window.addEventListener('load', function () {
         authorization: jwt
       }
     }
-    fetch( endpoint, settings )
-    .then(  resp => resp.json() )
-    .then( json => {
-        //console.log(json);
-        userName.textContent = `${json.firstName}  ${json.lastName} `;
-    }).catch( error => {
-      msgBox('Ocurrio en el servidor', 'warning');
-    })
+
+    try{
+      // Esperamos a que termine
+      const response = await fetch( endpoint, settings )
+      const json = await response.json();
+      userName.textContent = `${json.firstName}  ${json.lastName}`;
+    } catch(e){
+      msgBox('Ocurrio un error', 'error');
+    }
 
   };
-
 
   /* -------------------------------------------------------------------------- */
   /*                 FUNCIÓN 3 - Obtener listado de tareas [GET]                */
   /* -------------------------------------------------------------------------- */
-  function consultarTareas() {
+  async function consultarTareas() {
 
     const endpoint = 'https://todo-api.ctd.academy/v1/tasks';
     const settings = {
@@ -86,19 +85,18 @@ window.addEventListener('load', function () {
       }
     }
    
-    fetch( endpoint, settings )
-    .then(  resp => resp.json() )
-    .then( json => {
-        renderizarTareas(json);
-    })
+    const resp = await fetch( endpoint, settings );
+    const json = await resp.json();
 
+    renderizarTareas(json)
+  
   };
 
 
   /* -------------------------------------------------------------------------- */
   /*                    FUNCIÓN 4 - Crear nueva tarea [POST]                    */
   /* -------------------------------------------------------------------------- */
-  formCrearTarea.addEventListener('submit', function (event) {
+  formCrearTarea.addEventListener('submit', async function (event) {
     event.preventDefault();
 
     const description = inputTarea.value;
@@ -122,12 +120,16 @@ window.addEventListener('load', function () {
       }
     }
 
-    fetch( endpoint, settings )
-    .then(  resp => resp.json() )
-    .then( json => {
-        console.log(json);
-        consultarTareas();
-    })
+    const resp = await fetch( endpoint, settings );
+    console.log(resp);
+
+    if( resp.ok == false){
+      msgBox('Ocurrio un error', 'error');
+      return;
+    }
+    //const json = await resp.json();
+
+    consultarTareas();
 
   });
 
