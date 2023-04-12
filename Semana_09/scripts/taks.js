@@ -6,6 +6,8 @@ if( !jwt){
   location.replace('index.html');
 }
 
+AOS.init();
+
 /* ------ comienzan las funcionalidades una vez que carga el documento ------ */
 window.addEventListener('load', function () {
 
@@ -14,7 +16,7 @@ window.addEventListener('load', function () {
   const formCrearTarea = document.querySelector('.nueva-tarea');
   const userName = document.querySelector('.user-info p');
   const inputTarea = document.querySelector('#nuevaTarea');
-
+  const contadorTareas = document.querySelector('#cantidad-finalizadas');
   obtenerNombreUsuario();
   consultarTareas();
   /* -------------------------------------------------------------------------- */
@@ -51,7 +53,7 @@ window.addEventListener('load', function () {
   /*                 FUNCIÓN 2 - Obtener nombre de usuario [GET]                */
   /* -------------------------------------------------------------------------- */
   function obtenerNombreUsuario() {
-   
+  
     const endpoint = 'https://todo-api.ctd.academy/v1/users/getMe';
     const settings = {
       method: 'GET',
@@ -59,12 +61,13 @@ window.addEventListener('load', function () {
         authorization: jwt
       }
     }
-
     fetch( endpoint, settings )
     .then(  resp => resp.json() )
     .then( json => {
         //console.log(json);
         userName.textContent = `${json.firstName}  ${json.lastName} `;
+    }).catch( error => {
+      msgBox('Ocurrio en el servidor', 'warning');
     })
 
   };
@@ -135,7 +138,7 @@ window.addEventListener('load', function () {
   function renderizarTareas(listado) {
     const tareasPendientes = document.querySelector('.tareas-pendientes');
     const tareasTerminadas = document.querySelector('.tareas-terminadas');
-
+    let contador = 0;
     //console.log(listado);
     tareasPendientes.innerHTML = '';
     tareasTerminadas.innerHTML = '';
@@ -144,8 +147,10 @@ window.addEventListener('load', function () {
       const fecha = new Date(tarea.createdAt);
 
       if( tarea.completed == true ){
+        contador++;
+
         tareasTerminadas.innerHTML += // html
-          `<li class="tarea">
+          `<li class="tarea"  data-aos="flip-up">
               <div class="hecha">
                 <i class="fa-regular fa-circle-check"></i>
               </div>
@@ -160,7 +165,7 @@ window.addEventListener('load', function () {
 
       } else {
         tareasPendientes.innerHTML += // html
-          `<li class="tarea">
+          `<li class="tarea" data-aos="zoom-in-up" draggable="true">
             <button class="change" id="${tarea.id}"><i class="fa-regular fa-circle"></i></button>
             <div class="descripcion">
               <p class="nombre"> ${tarea.description} </p>
@@ -170,9 +175,10 @@ window.addEventListener('load', function () {
       }
     });
 
+    contadorTareas.innerText = contador
     // Seleccionar los btn y agregamos un eventListener
     botonesCambioEstado();
-    
+    botonBorrarTarea();
   };
 
   /* -------------------------------------------------------------------------- */
@@ -206,12 +212,12 @@ window.addEventListener('load', function () {
         .then( json => {
           console.log(json);
 
-          Swal.fire({
+/*           Swal.fire({
             title: 'To Do',
             text: 'Cambio de estado',
             icon: 'success',
             confirmButtonText: 'Aceptar'
-          })
+          }) */
 
           consultarTareas();
         }).catch( error => {
@@ -236,10 +242,55 @@ window.addEventListener('load', function () {
   /*                     FUNCIÓN 7 - Eliminar tarea [DELETE]                    */
   /* -------------------------------------------------------------------------- */
   function botonBorrarTarea() {
-   
-    
+    const btnsDelete = document.querySelectorAll('.borrar'); //NodeList
+
+    btnsDelete.forEach( btn => {
+
+        btn.addEventListener('click', function(evento){
+          console.log(evento.target);
+          const id = evento.target.id;
+          const endPoint = 'https://todo-api.ctd.academy/v1/tasks/' +id;
+
+          const config = {
+            method: 'DELETE',
+            headers: {
+              authorization: jwt ,
+              'Content-type': 'application/json'
+            }
+          }
+
+          Swal.fire({
+            title: 'To Do App',
+            text: "¿Seguro que desea Eliminar la tarea?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#ff7059ff',
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar'
+          }).then((result) => {
+            console.log(result);
+            if (result.isConfirmed == true) {
 
 
+              fetch(endPoint, config)
+              .then( resp => resp.json())
+              .then( data => {
+                consultarTareas();
+              });
+
+
+
+            }
+          })
+
+
+
+
+
+
+        })
+    });
 
   };
 

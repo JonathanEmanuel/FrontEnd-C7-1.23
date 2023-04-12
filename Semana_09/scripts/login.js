@@ -1,3 +1,4 @@
+AOS.init();
 /* ---------------------- obtenemos variables globales ---------------------- */
 const form = document.querySelector('form');
 const inputEmail = document.querySelector('#inputEmail');

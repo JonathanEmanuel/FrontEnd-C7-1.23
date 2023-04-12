@@ -31,3 +31,16 @@ function compararContrasenias(contrasenia_1, contrasenia_2) {
 
 }
 
+function msgBox(mensaje, tipo){
+
+    Swal.fire({
+        title: 'To Do App',
+        text: mensaje,
+        icon: tipo,
+        showCancelButton: false,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#ff7059ff',
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar'
+      })
+}
